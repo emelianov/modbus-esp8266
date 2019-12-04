@@ -5,6 +5,9 @@
 */
 #pragma once
 
+#ifndef MODBUSIP_ESP8266_H
+#define MODBUSIP_ESP8266_H
+
 #include <Modbus.h>
 #ifdef ESP8266
  #include <ESP8266WiFi.h>
@@ -124,3 +127,5 @@ class ModbusIP : public Modbus {
 		cbTransaction cb = nullptr, uint8_t unit = MODBUSIP_UNIT);
 	*/
 };
+
+#endif
