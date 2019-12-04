@@ -5,6 +5,9 @@
 */
 #pragma once
 
+#ifndef MODBUS_H
+#define MODBUS_H
+
 #include "Arduino.h"
 #include <vector>
 #include <algorithm>
@@ -238,3 +241,5 @@ class Modbus {
 };
 
 typedef bool (*cbTransaction)(Modbus::ResultCode event, uint16_t transactionId, void* data); // Callback skeleton for requests
+
+#endif
