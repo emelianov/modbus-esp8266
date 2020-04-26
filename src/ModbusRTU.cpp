@@ -49,11 +49,23 @@ bool ModbusRTU::begin(Stream* port) {
     return true;
 }
 
-bool ModbusRTU::begin(HardwareSerial* port, int16_t txPin) {
-	uint32_t baud = port->baudRate();
-	#if defined(ESP8266)
-	maxRegs = port->setRxBufferSize(MODBUS_MAX_FRAME) / 2 - 3;
-	#endif
+bool ModbusRTU::begin(HardwareSerial* port, uint32_t thisBaudrate, int16_t txPin) {
+    uint32_t baud = 0;
+    if (thisBaudrate > 0) {
+        baud = thisBaudrate;
+    }
+    else {
+    #if defined(ESP32) || defined(ESP8266)
+        // baudRate() only available with ESP32+ESP8266
+        baud = port->baudRate();
+    #else
+    #warning "Using default baudrate if not specified"
+        baud = 9600;
+    #endif
+    }
+    #if defined(ESP8266)
+    maxRegs = port->setRxBufferSize(MODBUS_MAX_FRAME) / 2 - 3;
+    #endif
     _port = port;
     _txPin = txPin;
     if (txPin >= 0) {
