@@ -3,6 +3,8 @@
     Copyright (C) 2014 Andr� Sarmento Barbosa
                   2017-2019 Alexander Emelianov (a.m.emelianov@gmail.com)
 */
+#if defined(ESP32) || defined(ESP8266)
+
 #include "ModbusIP_ESP8266.h"
 
 ModbusIP::ModbusIP() {
@@ -424,3 +426,5 @@ ModbusIP::~ModbusIP() {
 		client[i] = nullptr;
 	}
 }
+
+#endif
