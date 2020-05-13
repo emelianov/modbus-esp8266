@@ -43,23 +43,27 @@ uint16_t ModbusRTU::crc16(uint8_t address, uint8_t* frame, uint8_t pduLen) {
     return (CRCHi << 8) | CRCLo;
 }
 
+void ModbusRTU::setBaudrate(uint32 baud = -1) {
+	_baudrate = baud;
+}
+
 bool ModbusRTU::begin(Stream* port) {
     _port = port;
     _t = 2;
     return true;
 }
 
-bool ModbusRTU::begin(HardwareSerial* port, uint32_t thisBaudrate, int16_t txPin) {
+bool ModbusRTU::begin(HardwareSerial* port, int16_t txPin) {
     uint32_t baud = 0;
-    if (thisBaudrate > 0) {
-        baud = thisBaudrate;
+    if (_baudrate > 0) {
+        baud = _baudrate;
     }
     else {
     #if defined(ESP32) || defined(ESP8266)
         // baudRate() only available with ESP32+ESP8266
         baud = port->baudRate();
     #else
-    #warning "Using default baudrate if not specified"
+    #warning "Using default 9600 baud as not specified with setBaudrate()"
         baud = 9600;
     #endif
     }
@@ -104,7 +108,7 @@ bool ModbusRTU::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
     }
     _port->write(slaveId);  	//Send slaveId
     _port->write(frame, len); 	// Send PDU
-    _port->write(newCrc >> 8);	//Send CRC 
+    _port->write(newCrc >> 8);	//Send CRC
     _port->write(newCrc & 0xFF);//Send CRC
     _port->flush();
     if (_txPin >= 0)
@@ -137,7 +141,7 @@ void ModbusRTU::task() {
     }
     if (_len == 0) {    // No data
         if (isMaster) cleanup();
-        return;  
+        return;
     }
     if (millis() - t < _t) return;  // Wait data whitespace
 

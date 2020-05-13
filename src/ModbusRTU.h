@@ -23,6 +23,7 @@ class ModbusRTU : public Modbus {
     protected:
         Stream* _port;
         int16_t   _txPin = -1;
+        uint32_t _baudrate = -1;
 		unsigned int _t;	// inter-frame delay in mS
 		uint32_t t = 0;
 		bool isMaster = false;
@@ -43,6 +44,7 @@ class ModbusRTU : public Modbus {
 		bool cleanup(); 	// Free clients if not connected and remove timedout transactions and transaction with forced events
 		uint16_t crc16(uint8_t address, uint8_t* frame, uint8_t pdulen);
     public:
+		void setBaudrate(uint32 baud = -1);
 	 #if defined(ESP8266)
 	 	bool begin(SoftwareSerial* port, int16_t txPin=-1);
 	 #endif
