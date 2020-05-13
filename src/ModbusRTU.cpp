@@ -43,7 +43,7 @@ uint16_t ModbusRTU::crc16(uint8_t address, uint8_t* frame, uint8_t pduLen) {
     return (CRCHi << 8) | CRCLo;
 }
 
-void ModbusRTU::setBaudrate(uint32 baud) {
+void ModbusRTU::setBaudrate(uint32_t baud) {
 	_baudrate = baud;
 }
 
