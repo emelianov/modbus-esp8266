@@ -48,7 +48,7 @@ class ModbusRTU : public Modbus {
 	 #if defined(ESP8266)
 	 	bool begin(SoftwareSerial* port, int16_t txPin=-1);
 	 #endif
-		bool begin(HardwareSerial* port, uint32_t thisBaudrate=-1, int16_t txPin=-1);
+		bool begin(HardwareSerial* port, int16_t txPin=-1);
 		bool begin(Stream* port);
         void task();
 		void master() { isMaster = true; };
