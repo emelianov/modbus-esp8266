@@ -45,6 +45,9 @@ struct TAddress {
     bool operator==(const TAddress &obj) const { // TAddress == TAddress
 	    return type == obj.type && address == obj.address;
 	}
+    bool operator!=(const TAddress &obj) const { // TAddress != TAddress
+        return type != obj.type || address != obj.address;
+    }
     TAddress& operator++() {     // ++TAddress
         address++;
         return *this;

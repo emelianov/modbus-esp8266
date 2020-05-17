@@ -5,7 +5,7 @@
 	This code is licensed under the BSD New License. See LICENSE.txt for more info.
 */
 #pragma once
-#include <ModbusRTU.h>
+#include "ModbusRTU.h"
 
 // Table of CRC values
 static const uint16_t _auchCRC[] PROGMEM = {
@@ -72,9 +72,9 @@ bool ModbusRTU::begin(HardwareSerial* port, int16_t txPin) {
     #endif
     _port = port;
     _txPin = txPin;
-    if (txPin >= 0) {
-        pinMode(txPin, OUTPUT);
-        digitalWrite(txPin, LOW);
+    if (_txPin >= 0) {
+        pinMode(_txPin, OUTPUT);
+        digitalWrite(_txPin, LOW);
     }
     if (baud > 19200) {
         _t = 2;
@@ -106,14 +106,21 @@ bool ModbusRTU::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
         digitalWrite(_txPin, HIGH);
         delay(1);
     }
+	#ifdef ESP32
+	portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+	portENTER_CRITICAL(&mux);
+	#endif
     _port->write(slaveId);  	//Send slaveId
     _port->write(frame, len); 	// Send PDU
     _port->write(newCrc >> 8);	//Send CRC
     _port->write(newCrc & 0xFF);//Send CRC
+	#ifdef ESP32
+    portEXIT_CRITICAL(&mux);
+ 	#endif
     _port->flush();
     if (_txPin >= 0)
         digitalWrite(_txPin, LOW);
-	delay(_t);
+	//delay(_t);
 	return true;
 }
 
@@ -134,16 +141,24 @@ bool ModbusRTU::send(uint8_t slaveId, TAddress startreg, cbTransaction cb, void*
 }
 
 void ModbusRTU::task() {
+	#ifdef ESP32
+	portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+	portENTER_CRITICAL(&mux);
+	#endif
     if (_port->available() > _len)	{
         _len = _port->available();
         t = millis();
-        return;
     }
-    if (_len == 0) {    // No data
-        if (isMaster) cleanup();
-        return;
-    }
-    if (millis() - t < _t) return;  // Wait data whitespace
+    if (isMaster) cleanup();
+    if (_len == 0 || millis() - t < _t) { // No data or not end of frame
+		#ifdef ESP32
+    	portEXIT_CRITICAL(&mux);
+ 		#endif
+		return;  // Wait data whitespace
+	}
+	#ifdef ESP32
+    portEXIT_CRITICAL(&mux);
+ 	#endif
 
     uint8_t address = _port->read(); //first byte of frame = address
     _len--; // Decrease by slaveId byte
