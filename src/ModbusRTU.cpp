@@ -200,13 +200,18 @@ void ModbusRTU::task() {
     if (isMaster) {
         _reply = EX_SUCCESS;
         if ((_frame[0] & 0x7F) == _sentFrame[0]) { // Check if function code the same as requested
+
+			if(_frame[1] == _len - 2)
+				_data = malloc(_frame[1]);	// second byte is a counter of a dataload
+
 			// Procass incoming frame as master
 			masterPDU(_frame, _sentFrame, _sentReg, _data);
             if (_cb) {
-			    _cb((ResultCode)_reply, 0, nullptr);
+			    _cb((ResultCode)_reply, 0, _data);
 		    }
             free(_sentFrame);
             _sentFrame = nullptr;
+			if(_data) free(_data);
             _data = nullptr;
 		    _slaveId = 0;
 		}
