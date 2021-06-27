@@ -4,22 +4,26 @@
   
   (c)2020 Alexander Emelianov (a.m.emelianov@gmail.com)
   https://github.com/emelianov/modbus-esp8266
+
+  Tool Modbus Slave on PC for test
+  https://www.modbustools.com/download.html
 */
 
 #include <ModbusRTU.h>
 
-#define REG1 1
-#define REG2 2
-#define SLAVE_ID 1
+#define REG 0
+#define REG_NUM 32
+#define SLAVE_ID1 51
+#define SLAVE_ID2 52
+
+#define MBUS_HW_SERIAL Serial1
+#define MBUS_TXD_PIN   16         
+#define MBUS_RXD_PIN   35
 
 ModbusRTU mb;
 
 xSemaphoreHandle xMutex;
 Modbus::ResultCode err;
-
-bool resCallback(Modbus::ResultCode event, uint16_t, void*) {
-  err = event;
-}
 
 Modbus::ResultCode readSync(uint16_t Address, uint16_t start, uint16_t num, uint16_t* buf) {
   xSemaphoreTake(xMutex, portMAX_DELAY);
@@ -27,8 +31,11 @@ Modbus::ResultCode readSync(uint16_t Address, uint16_t start, uint16_t num, uint
     xSemaphoreGive(xMutex);
     return Modbus::EX_GENERAL_FAILURE;
   }
-  Serial.printf("SlaveID: %d Hreg %d\n", Address, start);
-  mb.readHreg(Address, start, buf, num, resCallback);
+  Serial.printf("SlaveID: %d Hreg %d\r\n", Address, start);
+  mb.readIreg(Address, start, buf, num, [](Modbus::ResultCode event, uint16_t, void*) {
+    err = event;
+    return true;
+  });
   while (mb.slave()) {
     vTaskDelay(1);
     mb.task();
@@ -43,8 +50,8 @@ void loop2( void * pvParameters );
 
 void setup() {
   Serial.begin(115200);
-  Serial1.begin(9600, SERIAL_8N1, 19, 18);
-  mb.begin(&Serial1, 17);
+  MBUS_HW_SERIAL.begin(9600, SERIAL_8N1, MBUS_RXD_PIN, MBUS_TXD_PIN);
+  mb.begin(&MBUS_HW_SERIAL);
   mb.master();
   xMutex = xSemaphoreCreateMutex();
   xTaskCreatePinnedToCore(
@@ -67,23 +74,25 @@ void setup() {
 
 }
 
-uint16_t hregs1[10];
+uint16_t hregs1[REG_NUM];
 void loop1( void * pvParameters ){
   while(true) {
       delay(10);
-      if (readSync(1, 1, 10, hregs1) != Modbus::EX_SUCCESS)
-        Serial.print("Error 1");
+      if (readSync(SLAVE_ID1, REG, REG_NUM, hregs1) == Modbus::EX_SUCCESS)
+        Serial.println("OK 2");
+      else
+        Serial.println("Error 2");
   }
 }
 
-uint16_t hregs2[10];
+uint16_t hregs2[REG_NUM];
 void loop2( void * pvParameters ){
   while(true) {
       delay(100);
-      if (readSync(1, 2, 10, hregs2) == Modbus::EX_SUCCESS)
+      if (readSync(SLAVE_ID2, REG, REG_NUM, hregs2) == Modbus::EX_SUCCESS)
         Serial.println("OK 2");
       else
-        Serial.print("Error 2");
+        Serial.println("Error 2");
   }
 }
 

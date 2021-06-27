@@ -63,7 +63,7 @@ bool ModbusRTUTemplate::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
         digitalWrite(_txPin, _direct?HIGH:LOW);
         delayMicroseconds(1000);
     }
-	#if defined(ESP32)
+	#if defined(ESP32_REMOVE)
 	//portENTER_CRITICAL(&mux);
 	vTaskDelay(1);
 	#endif
@@ -71,13 +71,13 @@ bool ModbusRTUTemplate::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
     _port->write(frame, len); 	// Send PDU
     _port->write(newCrc >> 8);	//Send CRC
     _port->write(newCrc & 0xFF);//Send CRC
-	#if defined(ESP32)
+	#if defined(ESP32_REMOVE)
 	vTaskSuspendAll();
 	#endif
     _port->flush();
     if (_txPin >= 0)
         digitalWrite(_txPin, _direct?LOW:HIGH);
-	#if defined(ESP32)
+	#if defined(ESP32_REMOVE)
 	xTaskResumeAll();
     //portEXIT_CRITICAL(&mux);
  	#endif
@@ -90,7 +90,7 @@ uint16_t ModbusRTUTemplate::send(uint8_t slaveId, TAddress startreg, cbTransacti
 	if (!_slaveId) { // Check if waiting for previous request result
 		rawSend(slaveId, _frame, _len);
 		if (waitResponse) {
-        	_slaveId = slaveId;
+        	_slaveId = std::max(slaveId, (uint8_t)1);
 			_timestamp = millis();
 			_cb = cb;
 			_data = data;
@@ -107,7 +107,7 @@ uint16_t ModbusRTUTemplate::send(uint8_t slaveId, TAddress startreg, cbTransacti
 }
 
 void ModbusRTUTemplate::task() {
-	#if defined(ESP32)
+	#if defined(ESP32_REMOVE)
 	//taskENTER_CRITICAL(&mux);
 	vTaskSuspendAll();
 	#endif
@@ -116,7 +116,7 @@ void ModbusRTUTemplate::task() {
         t = millis();
     }
 	if (_len == 0) {
-		#if defined(ESP32)
+		#if defined(ESP32_REMOVE)
     	//taskEXIT_CRITICAL(&mux);
 		xTaskResumeAll();
  		#endif
@@ -125,7 +125,7 @@ void ModbusRTUTemplate::task() {
 	}
 	if (isMaster) {
 		if (millis() - t < _t) {
-			#if defined(ESP32)
+			#if defined(ESP32_REMOVE)
     		//taskEXIT_CRITICAL(&mux);
 			xTaskResumeAll();
  			#endif
@@ -140,7 +140,7 @@ void ModbusRTUTemplate::task() {
         		t = millis();
 			}
 			if (millis() - taskStart > MODBUSRTU_MAX_READMS) { // Prevent from task() executed too long
-				#if defined(ESP32)
+				#if defined(ESP32_REMOVE)
     			//taskEXIT_CRITICAL(&mux);
 				xTaskResumeAll();
  				#endif
@@ -148,7 +148,7 @@ void ModbusRTUTemplate::task() {
 			}
 		}
 	}
-	#if defined(ESP32)
+	#if defined(ESP32_REMOVE)
     //taskEXIT_CRITICAL(&mux);
 	xTaskResumeAll();
  	#endif
