@@ -20,8 +20,8 @@ The Modbus generally uses serial RS-485 as physical layer (then called Modbus Se
 * Operates in any combination of multiple instances of
   * [Modbus RTU server](examples/RTU)
   * [Modbus RTU client](examples/RTU)
-  * Modbus TCP server for [ESP8266/ESP32](examples/TCP) and [Ethernet library](examples/TCP-Ethernet)
-  * Modbus TCP client for [ESP8266/ESP32](examples/TCP) and [Ethernet library](examples/TCP-Ethernet)
+  * Modbus TCP server for [ESP8266/ESP32](examples/TCP-ESP) and [Ethernet library](examples/TCP-Ethernet)
+  * Modbus TCP client for [ESP8266/ESP32](examples/TCP-ESP) and [Ethernet library](examples/TCP-Ethernet)
   * [MODBUS/TCP Security server (ESP8266)](examples/TLS)
   * [MODBUS/TCP Security client (ESP8266/ESP32)](examples/TLS)
 * Reply exception messages for all supported functions
@@ -38,7 +38,7 @@ The Modbus generally uses serial RS-485 as physical layer (then called Modbus Se
   * 0x15 - Write File Record
   * 0x16 - Mask Write Register
   * 0x17 - Read/Write multiple registers
-* [Callbacks](examples/callback) for
+* [Callbacks](examples/Callback) for
   * Client connect (Modbus TCP)
   * Server/Client disconnect (Modbus TCP)
   * Read specific Register
