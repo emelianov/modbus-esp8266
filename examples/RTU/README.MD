@@ -1,4 +1,4 @@
-This example is introduces how to use the library for ModbusRTU (typicaly over RS-485) to act as [master](master) or [slave](slave). Additionally thre is [example of master](WSP32-Concurent) device for multithread usage with ESP32.
+This example is introduces how to use the library for ModbusRTU (typicaly over RS-485) to act as [master](master) or [slave](slave). Additionally there is [example of master](ESP32-Concurent) device for multithread usage with ESP32.
 
 ## [Concurent thread-safe access to Modbus object](ESP32-Concurent)
 
