@@ -123,9 +123,9 @@ bool Modbus::removeReg(TAddress address, uint16_t numregs) {
 bool Modbus::addReg(TAddress address, uint16_t* value, uint16_t numregs) {
     if (0xFFFF - address.address < numregs)
         numregs = 0xFFFF - address.address;
-	for (uint16_t k = 0; k < numregs; k++)
-		addReg(address + k, value[k]);
-	return true;
+    for (uint16_t k = 0; k < numregs; k++)
+        addReg(address + k, value[k]);
+    return true;
 }
 
 void Modbus::slavePDU(uint8_t* frame) {
