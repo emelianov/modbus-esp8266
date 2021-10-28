@@ -232,7 +232,7 @@ void ModbusTCPTemplate<SERVER, CLIENT>::task() {
 	for (n = 0; n < MODBUSIP_MAX_CLIENTS; n++) {
 		if (!tcpclient[n]) continue;
 		if (!tcpclient[n]->connected()) continue;
-		while (millis() - taskStart < MODBUSIP_MAX_READMS &&  tcpclient[n]->available() > sizeof(_MBAP)) {
+		while (millis() - taskStart < MODBUSIP_MAX_READMS &&  (unsigned int)tcpclient[n]->available() > sizeof(_MBAP)) {
 			tcpclient[n]->readBytes(_MBAP.raw, sizeof(_MBAP.raw));	// Get MBAP
 		
 			if (__swap_16(_MBAP.protocolId) != 0) {   // Check if MODBUSIP packet. __swap is usless there.
