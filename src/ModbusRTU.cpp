@@ -80,11 +80,10 @@ bool ModbusRTUTemplate::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
     _port->write(newCrc >> 8);	//Send CRC
     _port->write(newCrc & 0xFF);//Send CRC
     _port->flush();
-    if (_txPin >= 0) {
+    if (_txPin >= 0)
         digitalWrite(_txPin, _direct?LOW:HIGH);
-    }
-    //delay(_t);
-    return true;
+	//delay(_t);
+	return true;
 }
 
 uint16_t ModbusRTUTemplate::send(uint8_t slaveId, TAddress startreg, cbTransaction cb, uint8_t unit, uint8_t* data, bool waitResponse) {
