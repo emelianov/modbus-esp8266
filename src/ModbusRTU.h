@@ -13,7 +13,7 @@ class ModbusRTUTemplate : public Modbus {
         Stream* _port;
         int16_t   _txPin = -1;
 		bool _direct = true;	// Transmit control logic (true=direct, false=inverse)
-		unsigned int _t;	// inter-frame delay in mS
+		uint32_t _t;	// inter-frame delay in mS
 		uint32_t t = 0;		// time sience last data byte arrived
 		bool isMaster = false;
 		uint8_t  _slaveId;
@@ -35,6 +35,7 @@ class ModbusRTUTemplate : public Modbus {
 		uint16_t crc16(uint8_t address, uint8_t* frame, uint8_t pdulen);
     public:
 		void setBaudrate(uint32_t baud = -1);
+		void setInterFrameDelay(uint32_t t_us);
 		template <class T>
 		bool begin(T* port, int16_t txPin = -1, bool direct = true);
 		bool begin(Stream* port);
