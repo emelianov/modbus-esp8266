@@ -34,7 +34,7 @@ class ModbusRTUTemplate : public Modbus {
 		bool cleanup(); 	// Free clients if not connected and remove timedout transactions and transaction with forced events
 		uint16_t crc16(uint8_t address, uint8_t* frame, uint8_t pdulen);
     public:
-		void setBaudrate(uint32_t baud = -1);
+		uint32_t calculateMinimumInterFrameDelay(uint32_t baud);
 		void setInterFrameDelay(uint32_t t_us);
 		template <class T>
 		bool begin(T* port, int16_t txPin = -1, bool direct = true);
@@ -57,7 +57,7 @@ bool ModbusRTUTemplate::begin(T* port, int16_t txPin, bool direct) {
     #else
     baud = 9600;
     #endif
-	setBaudrate(baud);
+	setInterFrameDelay(calculateMinimumInterFrameDelay(baud));
     _port = port;
     if (txPin >= 0) {
 	    _txPin = txPin;
