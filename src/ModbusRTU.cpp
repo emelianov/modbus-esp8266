@@ -43,18 +43,37 @@ uint16_t ModbusRTUTemplate::crc16(uint8_t address, uint8_t* frame, uint8_t pduLe
     return (CRCHi << 8) | CRCLo;
 }
 
-uint32_t ModbusRTUTemplate::calculateMinimumInterFrameTime(uint32_t baud) {
-	// The minimum time between frames is defined as 3.5 characters time in modbus specification.
-	// Modbus frame is 11 bits long so one modbus character equals 11 bits (1 start + 8 data + 1 parity + 1 stop)
+uint32_t ModbusRTUTemplate::calculateMinimumInterFrameTime(uint32_t baud, uint8_t char_bits) {
+	// baud = baudrate of the serial port
+	// char_bits = size of 1 modbus character (defined a 11 bits in modbus specificacion)
+	// Returns: The minimum time between frames (defined as 3.5 characters time in modbus specification)
+	
+	// According to standard, the Modbus frame is always 11 bits long:
+	// 1 start + 8 data + 1 parity + 1 stop
+	// 1 start + 8 data + 2 stops
+	// And the minimum time between frames is defined as 3.5 characters time in modbus specification.
 	// This means the time between frames (in microseconds) should be calculated as follows:
 	// _t = 3.5 x 11 x 1000000 / baudrate = 38500000 / baudrate
-	// This function returns the calculated minimum interframe time based on the baud rate passed.
+
 	// Eg: For 9600 baudrate _t = 38500000 / 9600 = 4010 us
 	// For baudrates grater than 19200 the _t should be fixed at 1750 us.
-    if (baud > 19200) {
+	
+	// If the used modbus frame length is 10 bits (out of standard - 1 start + 8 data + 1 stop), then 
+	// it can be set using char_bits = 10.
+    
+	if (baud > 19200) {
         return 1750UL;
     } else {
-        return (38500000UL/baud);
+		return (3.5 * (uint32_t)char_bits * 1000000UL) / baud;
+    }
+}
+
+// Kept for backward compatibility
+void ModbusRTUTemplate::setBaudrate(uint32_t baud) {
+    if (baud > 19200) {
+        _t = 2;
+    } else {
+        _t = (35000/baud) + 1;
     }
 }
 
@@ -70,7 +89,7 @@ void ModbusRTUTemplate::setInterFrameTime(uint32_t t_us) {
 
 bool ModbusRTUTemplate::begin(Stream* port) {
     _port = port;
-    _t = 2;
+    _t = 1750UL;
     return true;
 }
 
