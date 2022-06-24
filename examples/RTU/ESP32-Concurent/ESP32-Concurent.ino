@@ -65,7 +65,7 @@ void setup() {
  
  xTaskCreatePinnedToCore(
                     loop2,   /* Task function. */
-                    "Task1",     /* name of task. */
+                    "Task2",     /* name of task. */
                     10000,       /* Stack size of task */
                     NULL,        /* parameter of the task */
                     1,           /* priority of the task */
@@ -79,9 +79,9 @@ void loop1( void * pvParameters ){
   while(true) {
       delay(10);
       if (readSync(SLAVE_ID1, REG, REG_NUM, hregs1) == Modbus::EX_SUCCESS)
-        Serial.println("OK 2");
+        Serial.println("OK 1");
       else
-        Serial.println("Error 2");
+        Serial.println("Error 1");
   }
 }
 
