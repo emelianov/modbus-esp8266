@@ -203,7 +203,7 @@ Callback generation control. Callback generation is enabled by default. *Has no 
 
 ```c
 void onConnect(cbModbusConnect cb);
-void onDisonnect(cbModbusConnect cb);
+void onDisconnect(cbModbusConnect cb);
 ```
 
 *Modbus TCP Server* Assign callback function on new incoming connection event.
