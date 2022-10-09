@@ -1,6 +1,6 @@
-This example is introduces how to use the library for ModbusRTU (typicaly over RS-485) to act as [master](master) or [slave](slave). Additionally there is [example of master](ESP32-Concurent) device for multithread usage with ESP32.
+This example introduces how to use the library for ModbusRTU (typicaly over RS-485) to act as [master](master) or [slave](slave). Additionally there is [example of master](ESP32-Concurent) device for multithread usage with ESP32.
 
-## [Concurent thread-safe access to Modbus object](ESP32-Concurent)
+## [Concurrent thread-safe access to Modbus object](ESP32-Concurent)
 
 ## [Simple ModbusRTU master](master)
 
@@ -20,10 +20,10 @@ bool begin(Stream* port);
 - `txPin`   RX/TX control pin. Not assigned (assume auto RX/TX) by default
 - `direct`  Direct (true, default) or inverse (false) RX/TX pin control.
 
-Assing Serial port. txPin controls transmit enable for MAX-485.
+Assign Serial port. txPin controls transmit enable for MAX-485.
 
 ```c
-void setBaudrte(uint32 baud);
+void setBaudrate(uint32 baud);
 ```
 
 - `baud`    New baudrate.
@@ -33,21 +33,21 @@ Set or override Serial baudrate. Must be called after .begin() for Non-ESP devic
 ```c
 void client();
 void server(uint8_t slaveId);
-void slave(); // Depricated
-void master(uint8_t slaveId); // Depricated
+void slave(); // Deprecated
+void master(uint8_t slaveId); // Deprecated
 ```
 
 - `slaveId` Modbus slave id to associate to.
 
-Select and initialize master or slave mode to work. Switching between modes is not supported. Call is not returning error in this case but behaviour is unpredictible.
+Select and initialize master or slave mode to work. Switching between modes is not supported. Call is not returning error in this case but behaviour is unpredictable.
 
 ```c
 uint8_t client();
-uint8_t slave(); // Depricated
+uint8_t slave(); // Deprecated
 ```
 
 - Slave mode: Returns configured slave id.
-- Master mode: Returns slave id for active request or 0 if no request in-progress.
+- Master mode: Returns slave id for active request or 0 if no request in progress.
 
 # Modbus Library for Arduino
 ### ModbusRTU, ModbusTCP and ModbusTCP Security
