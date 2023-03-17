@@ -1,12 +1,12 @@
 This example introduces how to use the library for ModbusRTU (typicaly over RS-485) to act as [master](master) or [slave](slave). Additionally there is [example of master](ESP32-Concurent) device for multithread usage with ESP32.
 
-## [Concurrent thread-safe access to Modbus object](ESP32-Concurent)
+## [Concurrent thread-safe access to Modbus object](ESP32-Concurent/ESP32-Concurent.ino)
 
-## [Simple ModbusRTU master](master)
+## [Simple ModbusRTU master](master/master.ino)
 
-## [Simple ModbusRTU slave](slave)
+## [Simple ModbusRTU slave](slave/slave.ino)
 
-## [Sync ModbusRTU master](masterSync)
+## [Sync ModbusRTU master](masterSync/masterSync.ino)
 
 ## Modbus RTU Specific API
 

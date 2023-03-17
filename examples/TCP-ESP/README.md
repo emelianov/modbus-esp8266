@@ -1,10 +1,10 @@
 # ESP8266/ESP32 TCP Examples
 
-## [Basic client](client.ino)
+## [Basic client](client/client.ino)
 
-## [Client with blocking read operation](clientSync.ino)
+## [Client with blocking read operation](clientSync/clientSync.ino)
 
-## [Server](server.ino)
+## [Server](server/server.ino)
 
 ### API
 
