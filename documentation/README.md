@@ -41,7 +41,7 @@ Modbus standard defines only two types of data: bit value and 16-bit value. All 
 
 ## Value not read after `readCoil`/`readHreg`/etc
 
-The library is designed to execute calls async way. That is `readHreg()` function just sends read request to Modbus server device and exits. Responce is processed (as suun as it's arrive) by `task()`. `task()` is also async and exits if data hasn't arrive yet.  
+The library is designed to execute calls async way. That is `readHreg()` function just sends read request to Modbus server device and exits. Response is processed (as suun as it's arrive) by `task()`. `task()` is also async and exits if data hasn't arrive yet.  
 
 ---
 

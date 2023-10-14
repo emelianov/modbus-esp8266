@@ -47,7 +47,7 @@ void loop() {
       mb.task();
       delay(10);
     }
-    Serial.println(res);          // At this point res is filled with responce value
+    Serial.println(res);          // At this point res is filled with response value
   } else {
     mb.connect(remote);           // Try to connect if no connection
   }

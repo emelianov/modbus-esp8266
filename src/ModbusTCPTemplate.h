@@ -104,10 +104,10 @@ class ModbusTCPTemplate : public Modbus {
 	bool disconnect(IPAddress ip);
 	// ModbusTCP
 	void server(uint16_t port = 0);
-	// ModbusTCP depricated
-	inline void slave(uint16_t port = 0) { server(port); }	// Depricated
-	inline void master() { client(); }	// Depricated
-	inline void begin() { server(); }; 	// Depricated
+	// ModbusTCP deprecated
+	inline void slave(uint16_t port = 0) { server(port); }	// Deprecated
+	inline void master() { client(); }	// Deprecated
+	inline void begin() { server(); }; 	// Deprecated
 	void client();
 	void task();
 	void onConnect(cbModbusConnect cb = nullptr);
@@ -349,7 +349,7 @@ void ModbusTCPTemplate<SERVER, CLIENT>::task() {
 					}
 				}
 			}
-			if (!BIT_CHECK(tcpServerConnection, n)) _reply = REPLY_OFF;	// No replay if it was responce to master
+			if (!BIT_CHECK(tcpServerConnection, n)) _reply = REPLY_OFF;	// No replay if it was response to master
 			if (_reply != REPLY_OFF) {
 				_MBAP.length = __swap_16(_len+1);     // _len+1 for last byte from MBAP					
 				size_t send_len = (uint16_t)_len + sizeof(_MBAP.raw);

@@ -18,15 +18,15 @@ Fullfunctional ModbusTCP to ModbusRTU bridge with on-device ModbusRTU simulator
 
 ```c
 uint16_t rawRequest(id_ip, uint8_t* data, uint16_t len, cbTransaction cb = nullptr, uint8_t unit = MODBUSIP_UNIT);
-uint16_t rawResponce(id_ip, uint8_t* data, uint16_t len, uint8_t unit = MODBUSIP_UNIT);
-uint16_t errorResponce(id_ip, Modbus::FunctionCode fn, Modbus::ResultCode excode, uint8_t unit = MODBUSIP_UNIT);
+uint16_t rawResponse(id_ip, uint8_t* data, uint16_t len, uint8_t unit = MODBUSIP_UNIT);
+uint16_t errorResponse(id_ip, Modbus::FunctionCode fn, Modbus::ResultCode excode, uint8_t unit = MODBUSIP_UNIT);
 ```
 - `id_ip` SlaveId (`uint8_t`) or server IP address (`IPAddress`)
 - `data` Pointer to data buffer to send
 - `len` Byte count to send
 - `unit` UnitId (ModbusTCP/TLS only)
-- `fn` function code in responce
-- `excode` Exception code in responce
+- `fn` function code in response
+- `excode` Exception code in response
 
 ```c
 uint16_t setTransactionId(uint16_t id);
@@ -36,7 +36,7 @@ uint16_t setTransactionId(uint16_t id);
 ```c
 union frame_arg_t {
 struct frame_arg_t {
-    bool to_server; // true if frame is responce for local Modbus server/slave
+    bool to_server; // true if frame is response for local Modbus server/slave
     union {
         // For ModbusRTU
 		uint8_t slaveId;

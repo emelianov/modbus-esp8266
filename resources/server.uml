@@ -6,7 +6,7 @@ if (valid request arrived) then (yes)
   #palegreen:Execute onRequest Callback;
   if (EX_SUCCESS) then (yes)
     if (correct request parameters) then (yes)
-      :Preapre responce;
+      :Preapre response;
       #palegreen:Execute onGet/onSet Callback for each register in request;
       #palegreen:Execute onRequestSuccess Callback;
     else (no)

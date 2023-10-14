@@ -58,17 +58,17 @@ Modbus::ResultCode cbTcpRaw(uint8_t* data, uint8_t len, void* custom) {
   Serial.print(IPAddress(src->ipaddr));
   Serial.printf(" Fn: %02X, len: %d \n\r", data[0], len);
 
-  if (transRunning) { // Note that we can't process new requests from TCP-side while waiting for responce from RTU-side.
+  if (transRunning) { // Note that we can't process new requests from TCP-side while waiting for response from RTU-side.
     tcp.setTransactionId(src->transactionId); // Set transaction id as per incoming request
-    tcp.errorResponce(IPAddress((src->ipaddr), (Modbus::FunctionCode)data[0], Modbus::EX_SLAVE_DEVICE_BUSY);
+    tcp.errorResponse(IPAddress((src->ipaddr), (Modbus::FunctionCode)data[0], Modbus::EX_SLAVE_DEVICE_BUSY);
     return Modbus::EX_SLAVE_DEVICE_BUSY;
   }
 
   rtu.rawRequest(src->unitId, data, len, cbRtuTrans);
   
-  if (!src->unitId) { // If broadcast request (no responce from slave is expected)
+  if (!src->unitId) { // If broadcast request (no response from slave is expected)
     tcp.setTransactionId(src->transactionId); // Set transaction id as per incoming request
-    tcp.errorResponce(IPAddress(src->ipaddr), (Modbus::FunctionCode)data[0], Modbus::EX_ACKNOWLEDGE);
+    tcp.errorResponse(IPAddress(src->ipaddr), (Modbus::FunctionCode)data[0], Modbus::EX_ACKNOWLEDGE);
 
     transRunning = 0;
     slaveRunning = 0;
@@ -92,7 +92,7 @@ Modbus::ResultCode cbRtuRaw(uint8_t* data, uint8_t len, void* custom) {
   if (!transRunning) // Unexpected incoming data
       return Modbus::EX_PASSTHROUGH;
   tcp.setTransactionId(transRunning); // Set transaction id as per incoming request
-  uint16_t succeed = tcp.rawResponce(srcIp, data, len, slaveRunning);
+  uint16_t succeed = tcp.rawResponse(srcIp, data, len, slaveRunning);
   if (!succeed){
     Serial.print("TCP IP out - failed");
   }

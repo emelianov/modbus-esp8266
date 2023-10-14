@@ -193,7 +193,7 @@ void Modbus::slavePDU(uint8_t* frame) {
                 exceptionResponse(fcode, EX_SLAVE_FAILURE);
                 return;
             }
-            successResponce(HREG(field1), field2, fcode);
+            successResponse(HREG(field1), field2, fcode);
             _reply = REPLY_NORMAL;
             _onRequestSuccess(fcode, {HREG(field1), field2});
         break;
@@ -289,7 +289,7 @@ void Modbus::slavePDU(uint8_t* frame) {
                 exceptionResponse(fcode, EX_SLAVE_FAILURE);
                 return;
             }
-            successResponce(COIL(field1), field2, fcode);
+            successResponse(COIL(field1), field2, fcode);
             _reply = REPLY_NORMAL;
             _onRequestSuccess(fcode, {COIL(field1), field2});
         break;
@@ -436,7 +436,7 @@ void Modbus::slavePDU(uint8_t* frame) {
     }
 }
 
-void Modbus::successResponce(TAddress startreg, uint16_t numoutputs, FunctionCode fn) {
+void Modbus::successResponse(TAddress startreg, uint16_t numoutputs, FunctionCode fn) {
     free(_frame);
 	_len = 5;
     _frame = (uint8_t*) malloc(_len);
@@ -742,11 +742,11 @@ void Modbus::bitsToBool(bool* dst, uint8_t* src, uint16_t numregs) {
 
 void Modbus::masterPDU(uint8_t* frame, uint8_t* sourceFrame, TAddress startreg, uint8_t* output) {
     uint8_t fcode  = frame[0];
-    if ((fcode & 0x80) != 0) { // Check if error responce
+    if ((fcode & 0x80) != 0) { // Check if error response
 	    _reply = frame[1];
 	    return;
     }
-    if (fcode != sourceFrame[0]) { // Check if responce matches the request
+    if (fcode != sourceFrame[0]) { // Check if response matches the request
         _reply = EX_DATA_MISMACH;
         return;
     }

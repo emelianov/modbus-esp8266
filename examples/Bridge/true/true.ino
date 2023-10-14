@@ -47,7 +47,7 @@ Modbus::ResultCode cbTcpRaw(uint8_t* data, uint8_t len, void* custom) {
   Serial.print(IPAddress(src->ipaddr));
   Serial.printf(" Fn: %02X, len: %d \n", data[0], len);
   if (!src->to_server && transRunning == src->transactionId) { // Check if transaction id is match
-    rtu.rawResponce(slaveRunning, data, len);
+    rtu.rawResponse(slaveRunning, data, len);
   } else
     return Modbus::EX_PASSTHROUGH; // Allow frame to be processed by generic ModbusTCP routines
   transRunning = 0;
@@ -66,19 +66,19 @@ Modbus::ResultCode cbRtuRaw(uint8_t* data, uint8_t len, void* custom) {
       if (!tcp.connect(it->ip)) {                                                                           // Try to connect if not
         Serial.printf("error: Connection timeout\n");
        
-        rtu.errorResponce(it->slaveId, (Modbus::FunctionCode)data[0], Modbus::EX_DEVICE_FAILED_TO_RESPOND); // Send exceprional responce to master if no connection established
+        rtu.errorResponse(it->slaveId, (Modbus::FunctionCode)data[0], Modbus::EX_DEVICE_FAILED_TO_RESPOND); // Send exceprional response to master if no connection established
         // Note:
         // Indeed if both sides is build with the Modbus library _default settings_ RTU master side initiating requests to bridge will respond EX_TIMEOUT not EX_DEVICE_FAILED_TO_RESPOND.
-        // That's because connection timeout and RTU responce timeout are the same (1 second). That case EX_TIMEOUT on reached prior getting EX_DEVICE_FAILED_TO_RESPOND frame.
+        // That's because connection timeout and RTU response timeout are the same (1 second). That case EX_TIMEOUT on reached prior getting EX_DEVICE_FAILED_TO_RESPOND frame.
         return Modbus::EX_DEVICE_FAILED_TO_RESPOND; // Stop processing the frame
       }
     }
-    // Save transaction ans slave it for responce processing
+    // Save transaction ans slave it for response processing
     transRunning = tcp.rawRequest(it->ip, data, len, cbTcpTrans, it->unitId);
     if (!transRunning) {                                                                                  // rawRequest returns 0 is unable to send data for some reason
       tcp.disconnect(it->ip);                                                                             // Close TCP connection that case
       Serial.printf("send failed\n");
-      rtu.errorResponce(it->slaveId, (Modbus::FunctionCode)data[0], Modbus::EX_DEVICE_FAILED_TO_RESPOND); // Send exceprional responce to master if request bridging failed
+      rtu.errorResponse(it->slaveId, (Modbus::FunctionCode)data[0], Modbus::EX_DEVICE_FAILED_TO_RESPOND); // Send exceprional response to master if request bridging failed
       return Modbus::EX_DEVICE_FAILED_TO_RESPOND; // Stop processing the frame
     }
     Serial.printf("transaction: %d\n", transRunning);

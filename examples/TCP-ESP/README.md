@@ -46,7 +46,7 @@ uint16_t readIreg(IPAddress ip, uint16_t offset, uint16_t* value, uint16_t numre
 
 Sends corresponding Modbus read request to Modbus server at `ip`. Connection with server shoud be already established by connect(ip).
 Returns transaction `id` or `0` on failure. Failure maens that client unable to send the request bacause of no connection to the Modbus server is established or other internal error.
-Note: read/write functions just sending requests to remote Modbus server. The functions returns immediate after request sent and doesn't waiting for result. That is `value` contains no result data on the function exit. `value` will be filled as responce arrive and processed by .task() function.
+Note: read/write functions just sending requests to remote Modbus server. The functions returns immediate after request sent and doesn't waiting for result. That is `value` contains no result data on the function exit. `value` will be filled as response arrive and processed by .task() function.
 
 ```c
 bool isTransaction(uint16_t id);

@@ -43,7 +43,7 @@ If defined C STL will be used.
 
 /*
 #define MODBUS_MAX_REGS     32
-If defined regisers count will be limited.
+If defined registers count will be limited.
 */
 // Add limitation for specific STL implementation
 #if defined(MODBUS_USE_STL) && (defined(ESP8266) || defined(ESP32))
@@ -117,8 +117,8 @@ Enable using separate pins for RE DE
 #define MODBUSRTU_MAX_READ_US 1000UL * MODBUSRTU_MAX_READMS
 
 /*
-#defone MODBUSRTU_FLUSH_DELAY 1
-Set extraa delay after serial buffer flush before changing RE/DE pin state.
+#define MODBUSRTU_FLUSH_DELAY 1
+Set extra delay after serial buffer flush before changing RE/DE pin state.
 Specified in chars. That is 1 is means to add delay enough to send 1 char at current port baudrate
 */
 //#define MODBUSRTU_FLUSH_DELAY 1

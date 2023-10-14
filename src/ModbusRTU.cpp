@@ -71,7 +71,7 @@ uint32_t ModbusRTUTemplate::charSendTime(uint32_t baud, uint8_t char_bits) {
 
 uint32_t ModbusRTUTemplate::calculateMinimumInterFrameTime(uint32_t baud, uint8_t char_bits) {
 	// baud = baudrate of the serial port
-	// char_bits = size of 1 modbus character (defined a 11 bits in modbus specificacion)
+	// char_bits = size of 1 modbus character (defined a 11 bits in modbus specification)
 	// Returns: The minimum time between frames (defined as 3.5 characters time in modbus specification)
 	
 	// According to standard, the Modbus frame is always 11 bits long:
@@ -104,7 +104,7 @@ void ModbusRTUTemplate::setInterFrameTime(uint32_t t_us) {
 	// If the interframe calculated by calculateMinimumInterFrameTime() is not enough, you can set the interframe time manually with this function. 
 	// The time must be set in micro seconds. 
 	// This is useful when you are receiving data as a slave and you notice that the slave is dividing a frame in two or more pieces (and obviously the CRC is failing on all pieces).
-	// This is because it is detecting an interframe time inbetween bytes of the frame and thus it interprets one single frame as two or more frames.
+	// This is because it is detecting an interframe time in between bytes of the frame and thus it interprets one single frame as two or more frames.
 	// In that case it is useful to be able to set a more "permissive" interframe time.
     _t = t_us;
 }
@@ -267,7 +267,7 @@ void ModbusRTUTemplate::task() {
 	Serial.println();
 	#endif
 	//_port->readBytes(_frame, _len);
-    uint16_t frameCrc = ((_frame[_len - 2] << 8) | _frame[_len - 1]); // Last two byts = crc
+    uint16_t frameCrc = ((_frame[_len - 2] << 8) | _frame[_len - 1]); // Last two bytes = crc
     _len = _len - 2;    // Decrease by CRC 2 bytes
     if (frameCrc != crc16(address, _frame, _len)) {  // CRC Check
 		goto cleanup;
@@ -282,7 +282,7 @@ void ModbusRTUTemplate::task() {
 	}
     if (isMaster) {
         if ((_frame[0] & 0x7F) == _sentFrame[0]) { // Check if function code the same as requested
-			// Procass incoming frame as master
+			// Process incoming frame as master
 			if (_reply == EX_PASSTHROUGH || _reply == EX_FORCE_PROCESS)
 				masterPDU(_frame, _sentFrame, _sentReg, _data);
             if (_cb) {

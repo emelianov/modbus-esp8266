@@ -55,21 +55,21 @@ bool begin(Stream* port);
 Assing Serial port. txEnablePin controls transmit enable for MAX-485. Pass txEnableDirect=false if txEnablePin uses inverse logic.
 
 ```c
-void setBaudrte(uint32 baud);
+void setBaudrate(uint32 baud);
 ```
 
 Set or override Serial baudrate. Must be called after .begin() for Non-ESP devices.
 
 ```c
 void server(uint8_t slaveId);
-void slave(uint8_t slaveId); //Depricated
+void slave(uint8_t slaveId); //Deprecated
 ```
 
 Select and initialize master or slave mode to work. Switching between modes is not supported. Call is not returning error in this case but behaviour is unpredictible.
 
 ```c
 uint8_t server();
-uint8_t slave(); //Depricated
+uint8_t slave(); //Deprecated
 ```
 
 Slave mode: Returns configured slave id. Master mode: Returns slave id for active request or 0 if no request in-progress.
@@ -77,7 +77,7 @@ Slave mode: Returns configured slave id. Master mode: Returns slave id for activ
 ## Modbus TCP Server specific API
 
 ```c
-void begin(); // Depricated. Use server() instead.
+void begin(); // Deprecated. Use server() instead.
 void slave(uint16_t port = MODBUSIP_PORT); // For compatibility with ModbusRTU calls. Typically may be replaced with server() call.
 void server(uint16_t port = MODBUSIP_PORT);
 ```

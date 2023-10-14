@@ -48,7 +48,7 @@ For more information about Modbus see:
 
 ```diff
 // 4.1.1
-+ Protocol: Fix wrong error code responce on non-existent register
++ Protocol: Fix wrong error code response on non-existent register
 + ModbusTCP: Fix potential memory leak
 + API: cbEnable/cbDisable functionality extended
 + ESP-IDF: CMakeList.txt added
@@ -95,7 +95,7 @@ For more information about Modbus see:
 - Buffer/packet size limitation support
 - Slave/Server: slavePDU use early exit by return where possible
 - Master/Client: Check frame size against header data where possible
-- Master/Client: Additional responce data validation
+- Master/Client: Additional response data validation
 - Free global registers and callbacks on remove last Modbus instance
 - Test: push/pull functions
 - ModbusTCP: Refactor connect by dns name (using native implementation for ESP32 etc)

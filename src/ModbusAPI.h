@@ -130,9 +130,22 @@ class ModbusAPI : public T {
 	template <typename TYPEID>
 	uint16_t rawRequest(TYPEID ip, uint8_t* data, uint16_t len, cbTransaction cb = nullptr, uint8_t unit = MODBUSIP_UNIT);
 	template <typename TYPEID>
-	uint16_t rawResponce(TYPEID ip, uint8_t* data, uint16_t len, uint8_t unit = MODBUSIP_UNIT);
+	uint16_t rawResponse(TYPEID ip, uint8_t* data, uint16_t len, uint8_t unit = MODBUSIP_UNIT);
 	template <typename TYPEID>
-	uint16_t errorResponce(TYPEID ip, Modbus::FunctionCode fn, Modbus::ResultCode excode, uint8_t unit = MODBUSIP_UNIT);
+	uint16_t errorResponse(TYPEID ip, Modbus::FunctionCode fn, Modbus::ResultCode excode, uint8_t unit = MODBUSIP_UNIT);
+
+	// Use `rawResponse` instead
+	template <typename TYPEID>
+	[[deprecated]]
+	uint16_t rawResponce(TYPEID ip, uint8_t* data, uint16_t len, uint8_t unit = MODBUSIP_UNIT) {
+		return rawResponse(ip, data, len, unit);
+	}
+	// Use `errorResponse` instead
+	template <typename TYPEID>
+	[[deprecated]]
+	uint16_t errorResponce(TYPEID ip, Modbus::FunctionCode fn, Modbus::ResultCode excode, uint8_t unit = MODBUSIP_UNIT) {
+		return errorResponce(ip, fn, excode, unit);
+	}
 };
 
 // FNAME	writeCoil, writeIsts, writeHreg, writeIreg
@@ -488,7 +501,7 @@ uint16_t ModbusAPI<T>::rawRequest(TYPEID ip, \
 
 template <class T>
 template <typename TYPEID>
-uint16_t ModbusAPI<T>::rawResponce(TYPEID ip, \
+uint16_t ModbusAPI<T>::rawResponse(TYPEID ip, \
 			uint8_t* data, uint16_t len, uint8_t unit) {
 	free(this->_frame);
 	this->_frame = (uint8_t*)malloc(len);
@@ -501,7 +514,7 @@ uint16_t ModbusAPI<T>::rawResponce(TYPEID ip, \
 
 template <class T>
 template <typename TYPEID>
-uint16_t ModbusAPI<T>::errorResponce(TYPEID ip, Modbus::FunctionCode fn, Modbus::ResultCode excode, uint8_t unit) {
+uint16_t ModbusAPI<T>::errorResponse(TYPEID ip, Modbus::FunctionCode fn, Modbus::ResultCode excode, uint8_t unit) {
 	this->exceptionResponse(fn, excode);
 	return this->send(ip, NULLREG, nullptr, unit, nullptr, false);
 }

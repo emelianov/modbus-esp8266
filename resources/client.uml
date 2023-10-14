@@ -8,11 +8,11 @@ endif
 }
 while (request is active)
 partition task() {
-if (responce arrived) then (yes)
+if (response arrived) then (yes)
   #palegreen:Execute Transactional Callback;
   :fill result data;
 endif
-if (responce timeout) then (yes)
+if (response timeout) then (yes)
   #palegreen:Execute Transactional Callback;
 endif
 }
