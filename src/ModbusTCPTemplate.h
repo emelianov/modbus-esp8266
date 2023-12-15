@@ -227,7 +227,7 @@ void ModbusTCPTemplate<SERVER, CLIENT>::task() {
 				delete currentClient;
 				continue;
 			}
-#if defined(MODBUSRTU_DEBUG)
+#if defined(MODBUSIP_DEBUG)
 			Serial.println("IP: Connected");
 #endif
 			if (cbConnect == nullptr || cbConnect(currentClient->remoteIP())) {
