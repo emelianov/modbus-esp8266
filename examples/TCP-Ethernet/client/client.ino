@@ -31,7 +31,7 @@ void setup() {
   Ethernet.init(5);         // SS pin
   Ethernet.begin(mac, ip);  // start the Ethernet connection
   delay(1000);              // give the Ethernet shield a second to initialize
-  mb.client();              // Act as Modbus TCP server
+  mb.client();              // Act as Modbus TCP client
 }
 
 uint16_t res = 0;
