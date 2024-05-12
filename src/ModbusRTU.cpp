@@ -309,6 +309,7 @@ cleanup:
     free(_frame);
     _frame = nullptr;
     _len = 0;
+	_slaveId = 0;
 	if (isMaster) cleanup();
 }
 
