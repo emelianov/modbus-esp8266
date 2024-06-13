@@ -109,7 +109,7 @@ void ModbusRTUTemplate::setInterFrameTime(uint32_t t_us) {
     _t = t_us;
 }
 
-bool ModbusRTUTemplate::begin(Stream* port, int16_t txEnablePin, bool txEnableDirect) {
+bool ModbusRTUTemplate::begin(Stream* port, int16_t txEnablePin, ModbusRTUTxEnableMode txEnableMode) {
     _port = port;
     _t = 1750UL;
 #if defined(MODBUSRTU_FLUSH_DELAY)
@@ -117,9 +117,9 @@ bool ModbusRTUTemplate::begin(Stream* port, int16_t txEnablePin, bool txEnableDi
 #endif
     if (txEnablePin >= 0) {
 	    _txEnablePin = txEnablePin;
-		_direct = txEnableDirect;
+		_txEnableMode = txEnableMode;
         pinMode(_txEnablePin, OUTPUT);
-        digitalWrite(_txEnablePin, _direct?LOW:HIGH);
+        digitalWrite(_txEnablePin, _txEnableMode == TxEnableHigh ? LOW : HIGH);
     }
     return true;
 }
@@ -136,16 +136,16 @@ bool ModbusRTUTemplate::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
 #if defined(MODBUSRTU_REDE)
 	if (_txEnablePin >= 0 || _rxPin >= 0) {
     	if (_txEnablePin >= 0)
-        	digitalWrite(_txEnablePin, _direct?HIGH:LOW);
+        	digitalWrite(_txEnablePin, _txEnableMode == TxEnableHigh ? HIGH : LOW);
 		if (_rxPin >= 0)
-        	digitalWrite(_rxPin, _direct?HIGH:LOW);
+        	digitalWrite(_rxPin, _txEnableMode == TxEnableHigh ? HIGH : LOW);
 #if !defined(ESP32)
         delayMicroseconds(MODBUSRTU_REDE_SWITCH_US);
 #endif
 	}
 #else
     if (_txEnablePin >= 0) {
-        digitalWrite(_txEnablePin, _direct?HIGH:LOW);
+        digitalWrite(_txEnablePin, _txEnableMode == TxEnableHigh ? HIGH : LOW);
 #if !defined(ESP32)
         delayMicroseconds(MODBUSRTU_REDE_SWITCH_US);
 #endif
@@ -165,16 +165,16 @@ bool ModbusRTUTemplate::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
 		delayMicroseconds(_t1 * MODBUSRTU_FLUSH_DELAY);
 #endif
     	if (_txEnablePin >= 0)
-        	digitalWrite(_txEnablePin, _direct?LOW:HIGH);
+        	digitalWrite(_txEnablePin, _txEnableMode == TxEnableHigh ? LOW : HIGH);
 		if (_rxPin >= 0)
-        	digitalWrite(_rxPin, _direct?LOW:HIGH);
+        	digitalWrite(_rxPin, _txEnableMode == TxEnableHigh ? LOW : HIGH);
 	}
 #else
     if (_txEnablePin >= 0) {
 #if defined(MODBUSRTU_FLUSH_DELAY)
 		delayMicroseconds(_t1 * MODBUSRTU_FLUSH_DELAY);
 #endif
-        digitalWrite(_txEnablePin, _direct?LOW:HIGH);
+        digitalWrite(_txEnablePin, _txEnableMode == TxEnableHigh ? LOW : HIGH);
 	}
 #endif
     return true;

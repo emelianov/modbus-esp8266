@@ -11,14 +11,14 @@ This example introduces how to use the library for ModbusRTU (typicaly over RS-4
 ## Modbus RTU Specific API
 
 ```c
-bool begin(SoftwareSerial* port, int16_t txEnablePin=-1, bool txEnableDirect=true);
-bool begin(HardwareSerial* port, int16_t txEnablePin=-1, bool txEnableDirect=true);
+bool begin(SoftwareSerial* port, int16_t txEnablePin=-1, ModbusRTUTxEnableMode txEnableMode=TxEnableHigh);
+bool begin(HardwareSerial* port, int16_t txEnablePin=-1, ModbusRTUTxEnableMode txEnableMode=TxEnableHigh);
 bool begin(Stream* port);
 ```
 
 - `port`    Pointer to Serial port
 - `txEnablePin`   RX/TX control pin. Not assigned (assume auto RX/TX) by default
-- `txEnableDirect`  Direct (true, default) or inverse (false) RX/TX pin control.
+- `txEnablePin` controls transmit enable for MAX-485. Use `txEnableMode = TxEnableLow` if `txEnablePin` uses inverse logic (low when transmitting).
 
 Assign Serial port. txEnablePin controls transmit enable for MAX-485.
 
