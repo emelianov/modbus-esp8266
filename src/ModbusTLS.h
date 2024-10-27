@@ -86,13 +86,13 @@ class ModbusTLS : public ModbusAPI<ModbusTCPTemplate<WiFiServerSecure, WiFiClien
     #endif
 #if defined(MODBUSIP_USE_DNS)
     bool connect(String host, uint16_t port, const char* client_cert = nullptr, const char* client_private_key = nullptr, const char* ca_cert = nullptr) {
-        return connect(resolver(host.c_str()), port, client_cert, client_private_key, ca_cert);
+        return connect(resolver(host.c_str()), port, client_cert, client_private_key, ca_cert, host.c_str());
     }
     bool connect(const char* host, uint16_t port, const char* client_cert = nullptr, const char* client_private_key = nullptr, const char* ca_cert = nullptr) {
-        return connect(resolver(host), port, client_cert, client_private_key, ca_cert);
+        return connect(resolver(host), port, client_cert, client_private_key, ca_cert, host);
     }
 #endif
-    bool connect(IPAddress ip, uint16_t port, const char* client_cert = nullptr, const char* client_private_key = nullptr, const char* ca_cert = nullptr) {
+    bool connect(IPAddress ip, uint16_t port, const char* client_cert = nullptr, const char* client_private_key = nullptr, const char* ca_cert = nullptr, const char* host = nullptr) {
         if (!ip)
             return false;
         if(getSlave(ip) >= 0)
@@ -113,8 +113,14 @@ class ModbusTLS : public ModbusAPI<ModbusTCPTemplate<WiFiServerSecure, WiFiClien
         }
         #endif
         //return tcpclient[p]->connect(ip, port);
-        if (!tcpclient[p]->connect(ip, port))
+        if (host) {
+          if (!tcpclient[p]->connect(host, port))
             return false;
+        }
+        else {
+          if (!tcpclient[p]->connect(ip, port))
+            return false;
+        }
         return true;
     }
 };
