@@ -8,6 +8,21 @@
 #pragma once
 #include "ModbusAPI.h"
 
+/**
+ * When the TX enable pin is used, specifies the logical level to enable the TX
+ */
+enum ModbusRTUTxEnableMode {
+    /**
+     * The TX enable pin should be high when transmitting
+     */
+    TxEnableHigh,
+
+    /**
+     * The TX enable pin should be low when transmitting
+     */
+    TxEnableLow
+};
+
 class ModbusRTUTemplate : public Modbus {
     protected:
         Stream* _port;
@@ -15,7 +30,7 @@ class ModbusRTUTemplate : public Modbus {
 #if defined(MODBUSRTU_REDE)
         int16_t   _rxPin = -1;
 #endif
-		bool _direct = true;	// Transmit control logic (true=txEnableDirect, false=inverse)
+		ModbusRTUTxEnableMode _txEnableMode = TxEnableHigh;	// Transmit control logic
 		uint32_t _t;	// inter-frame delay in uS
 #if defined(MODBUSRTU_FLUSH_DELAY)
 		uint32_t _t1;	// char send time
@@ -46,13 +61,33 @@ class ModbusRTUTemplate : public Modbus {
 		uint32_t calculateMinimumInterFrameTime(uint32_t baud, uint8_t char_bits = 11);
 		void setInterFrameTime(uint32_t t_us);
 		uint32_t charSendTime(uint32_t baud, uint8_t char_bits = 11);
+
+		// Use `ModbusRTUTxEnableMode` overload instead
 		template <class T>
-		bool begin(T* port, int16_t txEnablePin = -1, bool txEnableDirect = true);
+		[[deprecated]]
+		bool begin(T* port, int16_t txEnablePin = -1, bool txEnableDirect = true) {
+			return begin(port, txEnablePin, txEnableDirect ? TxEnableHigh : TxEnableLow);
+		}
+		template <class T>
+		bool begin(T* port, int16_t txEnablePin = -1, ModbusRTUTxEnableMode txEnableMode = TxEnableHigh);
+
 #if defined(MODBUSRTU_REDE)
+		// Use `ModbusRTUTxEnableMode` overload instead
 		template <class T>
-		bool begin(T* port, int16_t txEnablePin, int16_t rxEnablePin, bool txEnableDirect);
+		[[deprecated]]
+		bool begin(T* port, int16_t txEnablePin, int16_t rxEnablePin, bool txEnableDirect) {
+			return begin(port, txEnablePin, rxEnablePin, txEnableDirect ? TxEnableHigh : TxEnableLow);
+		}
+		template <class T>
+		bool begin(T* port, int16_t txEnablePin, int16_t rxEnablePin, ModbusRTUTxEnableMode txEnableMode);
 #endif
-		bool begin(Stream* port, int16_t txEnablePin = -1, bool txEnableDirect = true);
+		// Use `ModbusRTUTxEnableMode` overload instead
+		[[deprecated]]
+		bool begin(Stream* port, int16_t txEnablePin = -1, bool txEnableDirect = true) {
+			return begin(port, txEnablePin, txEnableDirect ? TxEnableHigh : TxEnableLow);
+		}
+		bool begin(Stream* port, int16_t txEnablePin = -1, ModbusRTUTxEnableMode txEnableMode = TxEnableHigh);
+
         void task();
 		void client() { isMaster = true; };
 		inline void master() {client();}
@@ -64,7 +99,7 @@ class ModbusRTUTemplate : public Modbus {
 };
 
 template <class T>
-bool ModbusRTUTemplate::begin(T* port, int16_t txEnablePin, bool txEnableDirect) {
+bool ModbusRTUTemplate::begin(T* port, int16_t txEnablePin, ModbusRTUTxEnableMode txEnableMode) {
     uint32_t baud = 0;
     #if defined(ESP32) || defined(ESP8266) // baudRate() only available with ESP32+ESP8266
     baud = port->baudRate();
@@ -78,20 +113,20 @@ bool ModbusRTUTemplate::begin(T* port, int16_t txEnablePin, bool txEnableDirect)
     _port = port;
     if (txEnablePin >= 0) {
 	    _txEnablePin = txEnablePin;
-		_direct = txEnableDirect;
+		_txEnableMode = txEnableMode;
         pinMode(_txEnablePin, OUTPUT);
-        digitalWrite(_txEnablePin, _direct?LOW:HIGH);
+        digitalWrite(_txEnablePin, _txEnableMode == TxEnableHigh ? LOW : HIGH);
     }
     return true;
 }
 #if defined(MODBUSRTU_REDE)
 template <class T>
-bool ModbusRTUTemplate::begin(T* port, int16_t txEnablePin, int16_t rxEnablePin, bool txEnableDirect) {
-	begin(port, txEnablePin, txEnableDirect);
+bool ModbusRTUTemplate::begin(T* port, int16_t txEnablePin, int16_t rxEnablePin, ModbusRTUTxEnableMode txEnableMode) {
+	begin(port, txEnablePin, txEnableMode);
 	if (rxEnablePin > 0) {
 		_rxPin = rxEnablePin;
         pinMode(_rxPin, OUTPUT);
-        digitalWrite(_rxPin, _direct?LOW:HIGH);
+        digitalWrite(_rxPin, _txEnableMode == TxEnableHigh ? LOW : HIGH);
 	}
 	return true;
 }

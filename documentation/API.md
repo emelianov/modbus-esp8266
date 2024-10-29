@@ -47,12 +47,12 @@ bool removeIreg(uint16_t offset, uint16_t numregs = 1);
 ### Modbus RTU Specific API
 
 ```c
-bool begin(SoftwareSerial* port, int16_t txEnablePin=-1, bool txEnableDirect=true);
-bool begin(HardwareSerial* port, int16_t txEnablePin=-1, bool txEnableDirect=true);
+bool begin(SoftwareSerial* port, int16_t txEnablePin=-1, ModbusRTUTxEnableMode txEnableMode=TxEnableHigh);
+bool begin(HardwareSerial* port, int16_t txEnablePin=-1, ModbusRTUTxEnableMode txEnableMode=TxEnableHigh);
 bool begin(Stream* port);
 ```
 
-Assing Serial port. txEnablePin controls transmit enable for MAX-485. Pass txEnableDirect=false if txEnablePin uses inverse logic.
+Assign Serial port. `txEnablePin` controls transmit enable for MAX-485. Use `txEnableMode = TxEnableLow` if `txEnablePin` uses inverse logic (low when transmitting).
 
 ```c
 void setBaudrte(uint32 baud);
