@@ -139,16 +139,12 @@ bool ModbusRTUTemplate::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
         	digitalWrite(_txEnablePin, _direct?HIGH:LOW);
 		if (_rxPin >= 0)
         	digitalWrite(_rxPin, _direct?HIGH:LOW);
-#if !defined(ESP32)
         delayMicroseconds(MODBUSRTU_REDE_SWITCH_US);
-#endif
 	}
 #else
     if (_txEnablePin >= 0) {
         digitalWrite(_txEnablePin, _direct?HIGH:LOW);
-#if !defined(ESP32)
         delayMicroseconds(MODBUSRTU_REDE_SWITCH_US);
-#endif
 	}
 #endif
 #if defined(ESP32)
