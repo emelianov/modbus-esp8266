@@ -177,16 +177,22 @@ class Modbus {
 	    struct frame_arg_t {
             bool to_server;
             union {
-		        uint8_t slaveId;
+                // For RTU
+                struct {
+		            uint8_t slaveId;
+                    bool validFrame;
+                };
+                // For TCP
 		        struct {
 			        uint8_t unitId;
 			        uint32_t ipaddr;
 			        uint16_t transactionId;
 		        };
             };
-            frame_arg_t(uint8_t s, bool m = false) {
-                slaveId = s;
-                to_server = m;
+            frame_arg_t(uint8_t _slaveId, bool _to_server = false, bool _validFrame = true) {
+                slaveId = _slaveId;
+                to_server = _to_server;
+                validFrame = _validFrame;
             };
             frame_arg_t(uint8_t u, uint32_t a, uint16_t t, bool m = false) {
                 unitId = u;

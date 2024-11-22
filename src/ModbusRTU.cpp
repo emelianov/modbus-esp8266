@@ -269,13 +269,14 @@ void ModbusRTUTemplate::task() {
 	//_port->readBytes(_frame, _len);
     uint16_t frameCrc = ((_frame[_len - 2] << 8) | _frame[_len - 1]); // Last two byts = crc
     _len = _len - 2;    // Decrease by CRC 2 bytes
-    if (frameCrc != crc16(address, _frame, _len)) {  // CRC Check
-		goto cleanup;
-    }
+	bool crcError = frameCrc != crc16(address, _frame, _len);
+	valid_frame = valid_frame && !crcError;
 	_reply = EX_PASSTHROUGH;
 	if (_cbRaw) {
-		frame_arg_t header_data = { address, !isMaster };
-		_reply = _cbRaw(_frame, _len, (void*)&header_data);
+		if (!crcError || _cbRawIncludeCrcErrors) {
+			frame_arg_t header_data = { address, !isMaster, valid_frame };
+			_reply = _cbRaw(_frame, _len, (void*)&header_data);
+		}
 	}
 	if (!valid_frame && _reply != EX_FORCE_PROCESS) {
 		goto cleanup;
@@ -326,4 +327,9 @@ bool ModbusRTUTemplate::cleanup() {
         return true;
 	}
     return false;
+}
+
+bool ModbusRTUTemplate::onRaw(cbRaw cb, bool includeCrcErrors) {
+    _cbRawIncludeCrcErrors = includeCrcErrors;
+	return Modbus::onRaw(cb);
 }
