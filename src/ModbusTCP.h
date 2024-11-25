@@ -18,7 +18,7 @@ class WiFiServerESPWrapper : public WiFiServer {
   public:
     WiFiServerESPWrapper(uint16_t port) : WiFiServer(port) {}
     inline WiFiClient accept() {
-        return available();
+        return WiFiServer::accept();
     }
 };
 
