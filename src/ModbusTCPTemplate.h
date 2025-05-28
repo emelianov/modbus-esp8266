@@ -172,6 +172,9 @@ bool ModbusTCPTemplate<SERVER, CLIENT>::connect(IPAddress ip, uint16_t port) {
 	BIT_CLEAR(tcpServerConnection, p);
 #if defined(ESP32) && defined(MODBUSIP_CONNECT_TIMEOUT)
 	if (!tcpclient[p]->connect(ip, port?port:defaultPort, MODBUSIP_CONNECT_TIMEOUT)) {
+#elif defined(MODBUSIP_CONNECT_TIMEOUT)
+	tcpclient[p]->setTimeout(MODBUSIP_CONNECT_TIMEOUT);
+	if (!tcpclient[p]->connect(ip, port?port:defaultPort)) {
 #else
 	if (!tcpclient[p]->connect(ip, port?port:defaultPort)) {
 #endif
