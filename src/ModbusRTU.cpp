@@ -182,6 +182,13 @@ bool ModbusRTUTemplate::rawSend(uint8_t slaveId, uint8_t* frame, uint8_t len) {
 
 uint16_t ModbusRTUTemplate::send(uint8_t slaveId, TAddress startreg, cbTransaction cb, uint8_t unit, uint8_t* data, bool waitResponse) {
     bool result = false;
+    // Drop a stale pending request whose timeout has expired so the next send()
+    // is not gated by the previous slave's _slaveId. Without this, a master
+    // that polls a non-responding slave permanently deadlocks: cleanup() only
+    // ever runs from task(), task() only runs while the user is busy-waiting
+    // on a previous send(), and that busy-wait never starts once send() begins
+    // returning false from the gate below.
+    if (isMaster) cleanup();
 	if ((!isMaster || !_slaveId) && _len && _frame) { // Check if waiting for previous request result and _frame filled
 	//if (_len && _frame) { // Check if waiting for previous request result and _frame filled
 		rawSend(slaveId, _frame, _len);
